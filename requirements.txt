@@ -32,3 +32,4 @@ psutil        # 可选，用于 CPU 获取等性能控制
 monai
 acvl-utils
 blosc2
+gdown

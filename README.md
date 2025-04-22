@@ -31,14 +31,10 @@ pip install -r requirements.txt
 ```
 
 ## 🚀 Usage Example
-```bash
-python -m flyseg.prediction \
-  --input "T:\Chenglang\classification\annotation\dataset\20250415\20250415\Control\Good images" \
-  --output "T:\Chenglang\test" \
-  --application Toxicology \
-  --info PMMA_control \
-  --date 20250415 \
-  --organ CNS
+```
+
+python -m flyseg.prediction --input "T:\Chenglang\classification\annotation\dataset\20250415\20250415\Control\Good images\test" --output "T:\Chenglang\test" --application Toxicology --info PMMA_control --date 20250415 --organ CNS
+
 ```
 
 ---
