@@ -23,17 +23,36 @@ This tool allows researchers to preprocess `.h5` image data, apply trained nnUNe
 ```
 git clone https://github.com/Chase-hucl/FlySeg.git
 pip install -r requirements.txt
-python download_model.py
 
 ```
 
+## *(Optional)* Install dependent environments manually:
+```
+pip install -r requirements.txt
+```
 
 ## 🚀 Usage Example
+```bash
+python -m flyseg.prediction \
+  --input "T:\Chenglang\classification\annotation\dataset\20250415\20250415\Control\Good images" \
+  --output "T:\Chenglang\test" \
+  --application Toxicology \
+  --info PMMA_control \
+  --date 20250415 \
+  --organ CNS
 ```
-python -m flyseg.prediction --input "T:\Chenglang\classification\annotation\dataset\20250415\20250415\Control\Good images" --output "T:\Chenglang\test" --application Toxicology --info PMMA_control --date 20250415 --organ CNS
 
+---
+
+## 🔧 Maintenance & Cleanup
+
+If your pretrained model or installed package is corrupted, outdated, or you simply want to free space, run:
+```bash
+flyseg-clean-model
 ```
+This will remove the entire `pretrained_model/` cache folder.
 
+---
 
 ## Output data structure (Example)
 
@@ -48,4 +67,12 @@ output_dir/
             ├── prediction_mask/             # Final labeled masks
             ├── label_stats.csv         # Label analysis output
             └── preprocessing_summary.csv
+```            
 
+## 💪 Full Uninstallation
+To completely remove FlySeg and its downloaded model files:
+```bash
+flyseg-clean-model  # or manually delete pretrained_model/
+pip uninstall flyseg
+
+```
