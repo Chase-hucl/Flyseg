@@ -1,0 +1,19 @@
+# Ignore pretrained model weights
+pretrained_model/
+*.zip
+
+# Python & build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+env/
+venv/
+
+# PyCharm files
+.idea/
+.DS_Store
+
