@@ -19,10 +19,9 @@ This tool allows researchers to preprocess `.h5` image data, apply trained nnUNe
 
 ## 📦 Installation
 
-1. **Clone the repository:**
+1. **Clone the repository:** 
 ```
-git clone https://github.com/Chase-hucl/FlySeg.git
-pip install -r requirements.txt
+pip install git+https://github.com/Chase-hucl/Flyseg.git 
 
 ```
 
