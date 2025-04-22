@@ -4,7 +4,7 @@ import gdown
 import shutil
 
 # === 路径配置 ===
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+PROJECT_ROOT = os.path.abspath(os.getcwd())
 MODEL_DIR = os.path.join(PROJECT_ROOT, "pretrained_model")
 MODEL_ZIP = os.path.join(MODEL_DIR, "pretrained_model.zip")
 
