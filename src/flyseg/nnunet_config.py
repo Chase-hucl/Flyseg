@@ -1,56 +1,63 @@
 import os
+import zipfile
+import gdown
+import shutil
 
+# === 路径配置 ===
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+MODEL_DIR = os.path.join(PROJECT_ROOT, "pretrained_model")
+MODEL_ZIP = os.path.join(MODEL_DIR, "pretrained_model.zip")
+
+NNUNET_BASE = os.path.join(MODEL_DIR, "nnUNet")
+NNUNET_RESULTS = os.path.join(NNUNET_BASE, "nnUNet_results")
+NNUNET_RAW = os.path.join(NNUNET_BASE, "nnUNet_raw")
+NNUNET_PREPROCESSED = os.path.join(NNUNET_BASE, "nnUNet_preprocessed")
+
+MODEL_URL = "https://drive.google.com/file/d/1bU2-jB2XNM2e3XWCTW4nb7nq0S_LauIo/view?usp=drive_link"
+
+# === 工具函数 ===
 def is_unc(path: str) -> bool:
     return path.startswith("\\\\") or path.startswith("//")
 
+def ensure_model_downloaded():
+    """
+    下载并解压预训练模型，如果本地不存在。
+    """
+    os.makedirs(MODEL_DIR, exist_ok=True)
+
+    if not any(fname.endswith(".pkl") or os.path.isdir(os.path.join(MODEL_DIR, fname)) for fname in os.listdir(MODEL_DIR)):
+        print("🧠 pretrained_model not found, downloading...")
+
+        print("⬇️ Downloading model from Google Drive...")
+        gdown.download(MODEL_URL, MODEL_ZIP, quiet=False, fuzzy=True)
+
+        # print("📦 Extracting model...")
+        with zipfile.ZipFile(MODEL_ZIP, "r") as zip_ref:
+            zip_ref.extractall(MODEL_DIR)
+
+        print("✅ Model downloaded and extracted.")
+    else:
+        print("✅ Pretrained model found.")
+
 def configure_nnunet_environment():
     """
-    Automatically configures the required nnUNet environment variables based on the
-    pretrained model directory structure within the project.
-
-    This function sets the following environment variables:
-        - nnUNet_results:        path to trained model results
-        - nnUNet_raw:            path to raw input data (imagesTr/imagesTs)
-        - nnUNet_preprocessed:   path to preprocessed data
-
-    It assumes the following directory layout:
-        project_root/
-            pretrained_model/
-                nnUNet/
-                    nnUNet_results/
-                    nnUNet_raw/
-                    nnUNet_preprocessed/
-
-    Raises:
-        FileNotFoundError: if nnUNet_results directory is not found.
+    设置 nnUNet 所需的环境变量（基于本地模型结构）
     """
+    if not os.path.isdir(NNUNET_RESULTS):
+        raise FileNotFoundError(f"❌ nnUNet results directory not found: {NNUNET_RESULTS}")
 
-    # Resolve the project root from the current file location
-    current_file = os.path.abspath(__file__)
-    project_root = os.path.abspath(os.path.join(current_file, "../../.."))
-    nnunet_base_path = os.path.join(project_root, "pretrained_model", "nnUNet")
+    os.environ["nnUNet_results"] = NNUNET_RESULTS
+    os.environ["nnUNet_raw"] = NNUNET_RAW
+    os.environ["nnUNet_preprocessed"] = NNUNET_PREPROCESSED
 
-    # Define paths for nnUNet directories
-    nnunet_results = os.path.join(nnunet_base_path, "nnUNet_results")
-    nnunet_raw = os.path.join(nnunet_base_path, "nnUNet_raw")
-    nnunet_preprocessed = os.path.join(nnunet_base_path, "nnUNet_preprocessed")
+    # print("✅ nnUNet environment configured:")
+    # print(f"  nnUNet_results      = {NNUNET_RESULTS}")
+    # print(f"  nnUNet_raw          = {NNUNET_RAW}")
+    # print(f"  nnUNet_preprocessed = {NNUNET_PREPROCESSED}")
 
-    # Ensure the model directory exists
-    if not os.path.isdir(nnunet_results):
-        raise FileNotFoundError(f"❌ nnUNet results directory not found: {nnunet_results}")
+    return NNUNET_RAW, NNUNET_RESULTS
 
-    # Set environment variables for nnUNet
-    os.environ["nnUNet_results"] = nnunet_results
-    os.environ["nnUNet_raw"] = nnunet_raw
-    os.environ["nnUNet_preprocessed"] = nnunet_preprocessed
-    print(nnunet_raw)
-    return nnunet_raw, nnunet_results
-
-
-    # print("✅ nnUNet environment variables successfully configured:")
-    # print(f"  🧠 nnUNet_results      = {nnunet_results}")
-    # print(f"  📦 nnUNet_raw          = {nnunet_raw}")
-    # print(f"  📦 nnUNet_preprocessed = {nnunet_preprocessed}")
-
-if __name__ == "__main__":
-    configure_nnunet_environment()
+def clean_model_cache():
+    if os.path.exists(MODEL_DIR):
+        shutil.rmtree(MODEL_DIR)
+        print("🧹 Deleted pretrained_model folder.")

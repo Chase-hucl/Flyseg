@@ -9,7 +9,8 @@ setup(
     python_requires=">=3.9",
     entry_points={
         "console_scripts": [
-            "flyseg-predict=flyseg.prediction:main",  # 可选，定义命令行接口
+            "flyseg-predict = flyseg.prediction:main",
+            'flyseg-clean-model = flyseg.nnunet_config:clean_model_cache',# 可选，定义命令行接口
         ]
     }
 )

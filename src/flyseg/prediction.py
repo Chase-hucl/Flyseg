@@ -1,6 +1,6 @@
 import argparse
 import os
-from flyseg.nnunet_config import configure_nnunet_environment
+from flyseg.nnunet_config import configure_nnunet_environment, ensure_model_downloaded,clean_model_cache
 from flyseg.nnunet_runner import run_nnUNet_prediction, apply_postprocessing,get_dataset_directory,get_postprocessing_pkl_path
 from flyseg.preprocessor import process_images_multithreaded
 from flyseg.preprocessor import export_file_info_to_csv
@@ -9,8 +9,6 @@ from flyseg.utils.data_dispatcher import copy_and_rename_files_multithreaded
 from flyseg.postprocessor import analyze_label_folder, process_folder
 import sys
 import torch
-
-
 
 def main():
     print("CUDA available:", torch.cuda.is_available())
@@ -35,6 +33,7 @@ def main():
     args = parser.parse_args()
 
     print("🧪 Step 0: Configuring environment")
+    ensure_model_downloaded()
     nnunet_raw, nnunet_results= configure_nnunet_environment()
 
     if not os.path.exists(args.input):
