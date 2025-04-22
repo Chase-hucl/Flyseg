@@ -8,7 +8,7 @@ PROJECT_ROOT = os.path.abspath(os.getcwd())
 MODEL_DIR = os.path.join(PROJECT_ROOT, "pretrained_model")
 MODEL_ZIP = os.path.join(MODEL_DIR, "pretrained_model.zip")
 
-NNUNET_BASE = os.path.join(MODEL_DIR, "nnUNet")
+NNUNET_BASE = os.path.join(MODEL_DIR, "pretrained_model", "nnUNet")
 NNUNET_RESULTS = os.path.join(NNUNET_BASE, "nnUNet_results")
 NNUNET_RAW = os.path.join(NNUNET_BASE, "nnUNet_raw")
 NNUNET_PREPROCESSED = os.path.join(NNUNET_BASE, "nnUNet_preprocessed")
@@ -36,6 +36,8 @@ def ensure_model_downloaded():
             zip_ref.extractall(MODEL_DIR)
 
         print("✅ Model downloaded and extracted.")
+        if os.path.exists(MODEL_ZIP):
+            os.remove(MODEL_ZIP)
     else:
         print("✅ Pretrained model found.")
 
