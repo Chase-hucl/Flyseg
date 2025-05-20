@@ -48,6 +48,59 @@ def process_row_with_index(index: int, row: pd.Series, destination_folder: str) 
 
     return result
 
+
+import os
+import pandas as pd
+from pathlib import Path
+
+def rename_files_from_csv(csv_path: str, folder: str) -> None:
+    """
+    Rename files based on mappings in a CSV file. The CSV must contain 'Renamed Path' and 'Original Path' columns.
+
+    Rules:
+        - 'Renamed Path' filenames must end with '_0000.nii.gz'; this will be replaced with '.nii.gz'
+        - 'Original Path' filenames must end with '.dcimg.h5'; this will be replaced with '.nii.gz'
+        - Files will be renamed from folder/new_name to folder/old_name
+
+    Parameters:
+        csv_path (str): Path to the CSV file.
+        folder (str): Base directory containing the files to rename.
+
+    Raises:
+        FileNotFoundError: If CSV file or expected source file does not exist.
+        ValueError: If filename patterns are invalid.
+    """
+    csv_file = Path(csv_path)
+    root = Path(folder)
+
+    if not csv_file.exists():
+        raise FileNotFoundError(f"CSV file not found: {csv_file}")
+    if not root.is_dir():
+        raise FileNotFoundError(f"Folder not found: {root}")
+
+    df = pd.read_csv(csv_file)
+
+    for _, row in df.iterrows():
+        renamed_name = Path(row['Renamed Path']).name
+        original_name = Path(row['Original Path']).name
+
+        if not renamed_name.endswith("_0000.nii.gz"):
+            continue
+        if not original_name.endswith(".dcimg.h5"):
+            continue
+
+        new_name = renamed_name.replace("_0000.nii.gz", ".nii.gz")
+        old_name = original_name.replace(".dcimg.h5", ".nii.gz")
+
+        src = root / new_name
+        dst = root / old_name
+
+        if not src.exists():
+            raise FileNotFoundError(f"Source file does not exist: {src}")
+
+        src.rename(dst)
+
+
 def copy_and_rename_files_multithreaded(
     csv_path: str,
     destination_folder: str,

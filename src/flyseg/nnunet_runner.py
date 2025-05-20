@@ -14,7 +14,7 @@ def get_dataset_directory(organ: str, nnunet_raw: str) -> str:
     """
     organ_map = {
         "CNS": "Dataset206_drl",
-        "nubbin": "Dataset100_nubbin",
+        "Nubbin": "Dataset100_nubbin",
         # "Fly": "Dataset203_flygut",
         # "Brain": "Dataset208_brain",
         # Add more mappings here as needed
@@ -40,7 +40,7 @@ def get_postprocessing_pkl_path(organ: str, nnunet_results: str) -> str:
     """
     organ_map = {
         "CNS": "Dataset206_drl",
-        "nubbin": "Dataset100_nubbin",
+        "Nubbin": "Dataset306_nubbin",
         # "Fly": "Dataset203_flygut",
         # Add more organ-dataset mappings as needed
     }
@@ -84,7 +84,7 @@ def run_nnUNet_prediction(input_folder, output_folder, organ="CNS", num_parts=No
     """
     organ_to_dataset = {
         "CNS": "Dataset206_drl",  # ✅ 你想要的映射
-        "nubbin": "Dataset100_nubbin"
+        "Nubbin": "Dataset306_nubbin"
     }
     if isinstance(organ, int) or (isinstance(organ, str) and organ.isdigit()):
         dataset_id = str(organ)

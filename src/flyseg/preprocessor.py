@@ -9,11 +9,11 @@ from scipy.ndimage import (
 )
 from skimage.filters import threshold_otsu
 from flyseg.utils.flySeg_reader import file_read, data_save
+from flyseg.utils.GMM_HMRF_Body import mask_save, Body_processor,GMM_HMRF_body
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from typing import Tuple, List
 import csv
-
 
 def apply_otsu(image: np.ndarray, lower_bound: float, upper_bound: float) -> Tuple[np.ndarray, float]:
     """
@@ -27,13 +27,12 @@ def apply_otsu(image: np.ndarray, lower_bound: float, upper_bound: float) -> Tup
     Returns:
         thresholded image and Otsu threshold value.
     """
-    subset = image[(image > lower_bound) & (image < upper_bound)]
-    threshold = threshold_otsu(subset) if subset.size > 0 else lower_bound
-    thresholded_image = np.where(image >= threshold, image, 0)
-    return thresholded_image, threshold
+    data = image[(image > lower_bound) & (image < upper_bound)]
+    thresh = threshold_otsu(data) if data.size > 0 else lower_bound
+    image[image < thresh] = 0
+    return image, thresh
 
-
-def process_image(image_path: str, sigma: float = 2.0) -> Tuple[np.ndarray, float, np.ndarray]:
+def process_image(image_path: str, sigma: float = 2.0) -> Tuple[np.ndarray, float, np.ndarray, Tuple[int, int, int, int, int, int]]:
     """
     Processes a 3D image: thresholding, smoothing, and extracting largest component.
 
@@ -45,13 +44,12 @@ def process_image(image_path: str, sigma: float = 2.0) -> Tuple[np.ndarray, floa
         Tuple of processed image, threshold, and binary mask.
     """
     image = file_read(image_path).astype(np.uint16)
-    thresholded_image, threshold = apply_otsu(image, 20, 1000)
-    smoothed_image = gaussian_filter(thresholded_image, sigma=sigma)
-    binary_mask = smoothed_image > 0
+    image_1, threshold = apply_otsu(image, 20, 1000)
+    binary_mask = (image_1 > 0).astype(np.uint8)
     labeled_image, _ = label(binary_mask)
     component_sizes = np.bincount(labeled_image.ravel())
     largest_component_label = component_sizes[1:].argmax() + 1
-    largest_component_mask = labeled_image == largest_component_label
+    largest_component_mask = (labeled_image == largest_component_label)
     filled_mask = binary_fill_holes(largest_component_mask)
     bounding_boxes = find_objects(filled_mask)
     final_mask = np.zeros_like(image, dtype=np.uint8)
@@ -63,58 +61,57 @@ def process_image(image_path: str, sigma: float = 2.0) -> Tuple[np.ndarray, floa
         x_min, x_max = bbox[2].start, bbox[2].stop
         final_mask[z_min:z_max, y_min:y_max, x_min:x_max] = filled_mask[z_min:z_max, y_min:y_max, x_min:x_max]
         processed_image = image * final_mask
+        z, y, x = bounding_boxes[0]
+        boundingbox = (
+            max(z.start - 10, 0), min(z.stop + 10, image.shape[0]),
+            max(y.start - 10, 0), min(y.stop + 10, image.shape[1]),
+            max(x.start - 10, 0), min(x.stop + 10, image.shape[2])
+        )
+        cropped = image[boundingbox[0]:boundingbox[1], boundingbox[2]:boundingbox[3], boundingbox[4]:boundingbox[5]]
     else:
         processed_image = image
-
-    return processed_image, threshold, final_mask
-
+        cropped = image.copy()
+        boundingbox = (0, image.shape[0], 0, image.shape[1], 0, image.shape[2])
+    return processed_image, threshold, cropped, boundingbox
 
 def process_and_save_image(
     image_path: str,
     save_image_dir: str,
-) -> Tuple[str, float, Tuple[int, int, int]]:
+    body_dir: str,
+    alpha=2.0
+) -> Tuple[str, str, float, Tuple[int, int, int], str, List[float], List[float], List[float]]:
     """
-    Process a single image and save the processed result and mask.
-
-    Returns:
-        original image path, saved image path, threshold, shape, mask path
+    Process a single image and return extended results.
     """
-    processed_image, threshold, _ = process_image(image_path)
+    processed_image, threshold, cropped, bbox = process_image(image_path)
     image_shape = tuple(processed_image.shape)
-
     base_filename = os.path.splitext(os.path.basename(image_path))[0]
     image_filename = f"{base_filename}.nii.gz"
-    # mask_filename = f'FINDS_{index:04d}_mask.nii.gz'
-
     image_save_path = os.path.join(save_image_dir, image_filename)
-    # mask_save_path = os.path.join(save_mask_dir, mask_filename)
 
+    # Segment
+    segmenter = GMM_HMRF_body(n_components=3, alpha=alpha, max_iter=25, neighborhood=26)
+    mask, means, covs, weights = segmenter.gmm_fit(cropped)
+    # print(mask.shape)
+    # Post-process mask and restore
+    post_mask = Body_processor.post_mask(mask)
+    restored = Body_processor.restore_mask(image_shape, post_mask, bbox)
+
+    # Save
+    Body_filename = f"{base_filename}_bodyMask.nii.gz"
+    Body_path = os.path.join(body_dir, Body_filename)
+    mask_save(restored, body_dir, Body_filename)
     data_save(processed_image, save_image_dir, image_filename, file_format='nii')
-    # sitk_mask = sitk.GetImageFromArray(mask.astype(np.uint8))
-    # sitk.WriteImage(sitk_mask, mask_save_path)
 
-    return image_path, image_save_path, threshold, image_shape
-            # , mask_save_path)
+    return (
+        image_path, image_save_path, threshold, image_shape, Body_path,
+        means.flatten().tolist(),
+        covs.flatten().tolist(),
+        weights.flatten().tolist()
+    )
 
-def process_images_multithreaded(
-    input_folder: str,
-    save_image_dir: str,
-    # save_mask_dir: str
-) -> List[Tuple[str, str, float, Tuple[int, int, int]]]:
-    """
-    Multi-threaded processing of all .h5 images in a directory.
-
-    Args:
-        input_folder: Root directory containing .h5 files.
-        save_image_dir: Directory to save processed images.
-        save_mask_dir: Directory to save masks.
-
-    Returns:
-        List of processing summaries per image.
-    """
+def process_images_multithreaded(input_folder: str, save_image_dir: str, body_dir: str, alpha: float = 2.0, max_workers: int = 3) -> List[Tuple]:
     file_info = []
-    num_workers = os.cpu_count()//2
-    futures = []
 
     h5_files = []
     for root, _, files in os.walk(input_folder):
@@ -125,45 +122,60 @@ def process_images_multithreaded(
     total_files = len(h5_files)
     print(f"🧾 Found {total_files} raw .h5 images in '{input_folder}'")
 
-    with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        with tqdm(total=total_files, desc="Processing images") as pbar:
-            for image_path in h5_files:
-                futures.append(
-                    executor.submit(process_and_save_image, image_path, save_image_dir)
-                )
-            for future in as_completed(futures):
-                try:
-                    result = future.result()
-                    file_info.append(result)
-                except Exception as e:
-                    print(f"❌ Failed to process image: {e}")
-                pbar.update(1)
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(process_and_save_image, image_path, save_image_dir, body_dir, alpha): image_path for image_path in h5_files}
+        for future in tqdm(as_completed(futures), total=len(futures), desc="Processing images"):
+            try:
+                result = future.result()
+                file_info.append(result)
+            except Exception as e:
+                print(f"❌ Failed to process image {futures[future]}: {e}")
+
     return file_info
 
 def export_file_info_to_csv(
-    file_info: List[Tuple[str, str, float, Tuple[int, int, int]]],
+    file_info: List[Tuple[str, str, float, Tuple[int, int, int], str, List[float], List[float], List[float]]],
     csv_path: str,
     info_note: str = ""
 ) -> None:
     """
     Export processed image info to a CSV file.
 
-    If the file exists, data will be appended. The first line will include an optional info note as a comment.
-
     Args:
-        file_info: List of tuples containing (original_path, saved_path, threshold, shape)
-        csv_path: Path to the output CSV file
-        info_note: Optional string to add as a header comment (e.g., "CNS_20250419")
+        file_info: List of tuples:
+            (original_path, processed_path, threshold, shape, body_path, means, covariances, weights)
+        csv_path: Output CSV file path.
+        info_note: Optional extra info column.
     """
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
-    file_exists = os.path.isfile(csv_path)
 
     with open(csv_path, mode='w', newline='') as csvfile:
         writer = csv.writer(csvfile)
-        # Write header if new file
-        writer.writerow(["Info","Original Path", "Processed Path", "Threshold", "Shape (Z,Y,X)"])
+        writer.writerow([
+            "Info", "Original Path", "Processed Path", "Threshold",
+            "Shape (Z,Y,X)", "Body Path",
+            "Means", "Covariances", "Weights"
+        ])
 
-        # Write data
         for entry in file_info:
-            orig, saved, threshold, shape = entry
-            writer.writerow([info_note,orig, saved, threshold, str(shape)])
+            try:
+                (
+                    orig_path, proc_path, threshold, shape, body_path,
+                    means, covariances, weights
+                ) = entry
+
+                writer.writerow([
+                    info_note,
+                    orig_path,
+                    proc_path,
+                    threshold,
+                    str(shape),
+                    body_path,
+                    means,
+                    covariances,
+                    weights,
+                ])
+            except Exception as e:
+                print(f"⚠️ Failed to write entry to CSV: {e}")
+
+

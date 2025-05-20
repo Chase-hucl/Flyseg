@@ -27,6 +27,8 @@ matplotlib>=3.5  # 可选，用于调试图像
 
 # === Others ===
 psutil        # 可选，用于 CPU 获取等性能控制
+numba
+openpyxl
 
 # ✅ nnUNetv2 dependencies
 monai

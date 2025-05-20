@@ -13,7 +13,7 @@ NNUNET_RESULTS = os.path.join(NNUNET_BASE, "nnUNet_results")
 NNUNET_RAW = os.path.join(NNUNET_BASE, "nnUNet_raw")
 NNUNET_PREPROCESSED = os.path.join(NNUNET_BASE, "nnUNet_preprocessed")
 
-MODEL_URL = "https://drive.google.com/file/d/1bU2-jB2XNM2e3XWCTW4nb7nq0S_LauIo/view?usp=drive_link"
+MODEL_URL = "https://drive.google.com/file/d/1iHcvvcFeZ4XUQDQHEvbJenOwHkWuKHIP/view"
 
 # === 工具函数 ===
 def is_unc(path: str) -> bool:
