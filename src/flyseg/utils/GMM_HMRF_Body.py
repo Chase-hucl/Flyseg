@@ -41,15 +41,11 @@ class Body_processor:
 
     @staticmethod
     def post_mask(mask):
-        mask = binary_fill_holes(mask).astype(np.uint8)
-        structure = generate_binary_structure(3, 1)
-        mask = binary_closing(mask, structure)
-        mask = binary_opening(mask, structure)
+        mask = (mask > 0).astype(np.uint8)
+        mask = binary_fill_holes(mask)
         smoothed = gaussian_filter(mask.astype(np.float32), sigma=2)
         smoothed_binary = (smoothed > 0.5).astype(np.uint8)
-        closed = binary_closing(smoothed_binary, structure)
-        opened = binary_opening(closed, structure)
-        filled_mask = binary_fill_holes(opened).astype(np.uint8)
+        filled_mask = binary_fill_holes(smoothed_binary).astype(np.uint8)
         def remove_objects(mask, sigma):
             labeled_mask, num_features = label(mask)
             # 如果没有任何组件，则直接返回原始 mask

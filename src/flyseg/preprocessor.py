@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from typing import Tuple, List
 import csv
+# from flyseg.utils.Otsu_seg_body import fill_holes_by_slice, post_mask
 
 def apply_otsu(image: np.ndarray, lower_bound: float, upper_bound: float) -> Tuple[np.ndarray, float]:
     """
@@ -27,6 +28,7 @@ def apply_otsu(image: np.ndarray, lower_bound: float, upper_bound: float) -> Tup
     Returns:
         thresholded image and Otsu threshold value.
     """
+    image = image.copy()
     data = image[(image > lower_bound) & (image < upper_bound)]
     thresh = threshold_otsu(data) if data.size > 0 else lower_bound
     image[image < thresh] = 0
@@ -44,6 +46,7 @@ def process_image(image_path: str, sigma: float = 2.0) -> Tuple[np.ndarray, floa
         Tuple of processed image, threshold, and binary mask.
     """
     image = file_read(image_path).astype(np.uint16)
+    # image = image.copy()
     image_1, threshold = apply_otsu(image, 20, 1000)
     binary_mask = (image_1 > 0).astype(np.uint8)
     labeled_image, _ = label(binary_mask)
@@ -90,24 +93,25 @@ def process_and_save_image(
     image_save_path = os.path.join(save_image_dir, image_filename)
 
     # Segment
-    segmenter = GMM_HMRF_body(n_components=3, alpha=alpha, max_iter=25, neighborhood=26)
-    mask, means, covs, weights = segmenter.gmm_fit(cropped)
-    # print(mask.shape)
-    # Post-process mask and restore
-    post_mask = Body_processor.post_mask(mask)
-    restored = Body_processor.restore_mask(image_shape, post_mask, bbox)
-
-    # Save
-    Body_filename = f"{base_filename}_bodyMask.nii.gz"
-    Body_path = os.path.join(body_dir, Body_filename)
-    mask_save(restored, body_dir, Body_filename)
+    # segmenter = GMM_HMRF_body(n_components=3, alpha=alpha, max_iter=20, neighborhood=26)
+    # mask, means, covs, weights = segmenter.gmm_fit(cropped)
+    # # print(mask.shape)
+    # # Post-process mask and restore
+    # post_mask = Body_processor.post_mask(mask)
+    # restored = Body_processor.restore_mask(image_shape, post_mask, bbox)
+    #
+    # # Save
+    # Body_filename = f"{base_filename}_bodyMask.nii.gz"
+    # Body_path = os.path.join(body_dir, Body_filename)
+    # mask_save(restored, body_dir, Body_filename)
     data_save(processed_image, save_image_dir, image_filename, file_format='nii')
-
+    #
     return (
-        image_path, image_save_path, threshold, image_shape, Body_path,
-        means.flatten().tolist(),
-        covs.flatten().tolist(),
-        weights.flatten().tolist()
+        image_path, image_save_path, threshold, image_shape,
+        # Body_path,
+        # means.flatten().tolist(),
+        # covs.flatten().tolist(),
+        # weights.flatten().tolist()
     )
 
 def process_images_multithreaded(input_folder: str, save_image_dir: str, body_dir: str, alpha: float = 2.0, max_workers: int = 3) -> List[Tuple]:
@@ -116,7 +120,7 @@ def process_images_multithreaded(input_folder: str, save_image_dir: str, body_di
     h5_files = []
     for root, _, files in os.walk(input_folder):
         for file in files:
-            if file.endswith(".h5"):
+            if file.endswith(".h5") or file.endswith(".nii.gz"):
                 h5_files.append(os.path.join(root, file))
 
     total_files = len(h5_files)
@@ -134,10 +138,12 @@ def process_images_multithreaded(input_folder: str, save_image_dir: str, body_di
     return file_info
 
 def export_file_info_to_csv(
-    file_info: List[Tuple[str, str, float, Tuple[int, int, int], str, List[float], List[float], List[float]]],
+    file_info: List[Tuple[str, str, float, Tuple[int, int, int]]],
     csv_path: str,
     info_note: str = ""
 ) -> None:
+
+    # str, List[float], List[float], List[float]
     """
     Export processed image info to a CSV file.
 
@@ -153,15 +159,16 @@ def export_file_info_to_csv(
         writer = csv.writer(csvfile)
         writer.writerow([
             "Info", "Original Path", "Processed Path", "Threshold",
-            "Shape (Z,Y,X)", "Body Path",
-            "Means", "Covariances", "Weights"
+            "Shape (Z,Y,X)",
+            # "Body Path",
+            # "Means", "Covariances", "Weights"
         ])
 
         for entry in file_info:
             try:
                 (
-                    orig_path, proc_path, threshold, shape, body_path,
-                    means, covariances, weights
+                    orig_path, proc_path, threshold, shape
+                    # , body_path,means, covariances, weights
                 ) = entry
 
                 writer.writerow([
@@ -170,10 +177,10 @@ def export_file_info_to_csv(
                     proc_path,
                     threshold,
                     str(shape),
-                    body_path,
-                    means,
-                    covariances,
-                    weights,
+                    # body_path,
+                    # means,
+                    # covariances,
+                    # weights,
                 ])
             except Exception as e:
                 print(f"⚠️ Failed to write entry to CSV: {e}")

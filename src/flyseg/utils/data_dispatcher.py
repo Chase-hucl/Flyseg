@@ -12,6 +12,7 @@ def process_row_with_index(index: int, row: pd.Series, destination_folder: str) 
     Process a single row: read image, rename to Finds_XXXX.nii.gz, save, and return mapping.
     """
     result = {
+        "Index": index,
         "Original Path": None,
         "Renamed Path": None,
         "Status": "Failed"
@@ -27,7 +28,6 @@ def process_row_with_index(index: int, row: pd.Series, destination_folder: str) 
         # New filename with zero-padded index
         new_filename = f"Finds_{index:04d}_0000.nii.gz"
         dst_path = os.path.join(destination_folder, new_filename)
-
         shutil.copy(src_path,dst_path)
         # print(f"Saved file to: {save_path}")
 
@@ -52,6 +52,7 @@ def process_row_with_index(index: int, row: pd.Series, destination_folder: str) 
 import os
 import pandas as pd
 from pathlib import Path
+from natsort import natsorted
 
 def rename_files_from_csv(csv_path: str, folder: str) -> None:
     """
@@ -128,9 +129,11 @@ def copy_and_rename_files_multithreaded(
             except Exception as e:
                 print(f"❌ Thread error: {e}")
     # print(results)
-    results_df = pd.DataFrame(results)
+    results_df = pd.DataFrame(results).set_index("Index")
     df = pd.concat([df, results_df[["Renamed Path", "Status"]]], axis=1)
     df.to_csv(csv_path, index=False)
+    # files = natsorted(os.listdir(destination_folder))
+
     # print(f"✅ Updated input CSV with renaming info: {csv_path}")
 
     # Save mapping for output back-rename
