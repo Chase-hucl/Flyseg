@@ -7,12 +7,14 @@ from scipy.ndimage import (
     binary_fill_holes,
     find_objects
 )
+from sklearn.mixture import GaussianMixture
 from skimage.filters import threshold_otsu
 from flyseg.utils.flySeg_reader import file_read, data_save
-from flyseg.utils.GMM_HMRF_Body import mask_save, Body_processor,GMM_HMRF_body
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from flyseg.utils.GMM_Body import restore_to_original_size, post_mask, fill_holes_zx, clean_filename, data_save_body
+# from flyseg.utils.GMM_HMRF_Body import mask_save, Body_processor,GMM_HMRF_body
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
-from typing import Tuple, List
+from typing import Tuple, List, Any, Dict
 import csv
 # from flyseg.utils.Otsu_seg_body import fill_holes_by_slice, post_mask
 
@@ -81,40 +83,97 @@ def process_and_save_image(
     image_path: str,
     save_image_dir: str,
     body_dir: str,
-    alpha=2.0
-) -> Tuple[str, str, float, Tuple[int, int, int], str, List[float], List[float], List[float]]:
+) -> Dict[str, Any]:
     """
-    Process a single image and return extended results.
+    处理单张图像并保存结果，同时返回处理信息。
+
+    参数
+    ----
+    image_path : str
+        输入图像路径
+    save_image_dir : str
+        处理后图像的保存目录
+    body_dir : str
+        body mask 保存目录
+    alpha : float, optional
+        GMM_HMRF 的正则化参数 (默认 2.0)
+
+    返回
+    ----
+    Dict[str, Any]
+        {
+            "image_path": str,
+            "image_save_path": str,
+            "threshold": float,
+            "image_shape": Tuple[int, int, int],
+            "filename": str,
+            "needs_check": bool,
+            "status": str,
+            "means": List[float],
+            "covariances": List[float],
+            "weights": List[float]
+        }
     """
+    # Step 1: 预处理图像
     processed_image, threshold, cropped, bbox = process_image(image_path)
     image_shape = tuple(processed_image.shape)
+
+    # Step 2: 设置文件名和保存路径
     base_filename = os.path.splitext(os.path.basename(image_path))[0]
     image_filename = f"{base_filename}.nii.gz"
     image_save_path = os.path.join(save_image_dir, image_filename)
 
-    # Segment
-    # segmenter = GMM_HMRF_body(n_components=3, alpha=alpha, max_iter=20, neighborhood=26)
-    # mask, means, covs, weights = segmenter.gmm_fit(cropped)
-    # # print(mask.shape)
-    # # Post-process mask and restore
-    # post_mask = Body_processor.post_mask(mask)
-    # restored = Body_processor.restore_mask(image_shape, post_mask, bbox)
-    #
-    # # Save
-    # Body_filename = f"{base_filename}_bodyMask.nii.gz"
-    # Body_path = os.path.join(body_dir, Body_filename)
-    # mask_save(restored, body_dir, Body_filename)
-    data_save(processed_image, save_image_dir, image_filename, file_format='nii')
-    #
-    return (
-        image_path, image_save_path, threshold, image_shape,
-        # Body_path,
-        # means.flatten().tolist(),
-        # covs.flatten().tolist(),
-        # weights.flatten().tolist()
+    # Step 3: GMM 聚类
+    img_flat = cropped.flatten().reshape(-1, 1)
+    gmm = GaussianMixture(
+        n_components=3,
+        covariance_type="full",
+        random_state=42,
+        max_iter=100
     )
+    gmm.fit(img_flat)
 
-def process_images_multithreaded(input_folder: str, save_image_dir: str, body_dir: str, alpha: float = 2.0, max_workers: int = 3) -> List[Tuple]:
+    labels = gmm.predict(img_flat).reshape(cropped.shape)
+    means = gmm.means_.flatten().tolist()
+    covariances = gmm.covariances_.flatten().tolist()
+    weights = gmm.weights_.flatten().tolist()
+
+    # Step 4: 选择感兴趣的成分（次大均值）
+    sorted_indices = np.argsort(means)
+    component = sorted_indices[-2]
+    mask0 = (labels == component).astype(np.uint8)
+
+    # Step 5: 恢复到原始大小
+    mask = restore_to_original_size(processed_image, mask0, bbox)
+
+    # Step 6: 保存处理后的图像
+    data_save(processed_image, save_image_dir, image_filename, file_format='nii')
+
+    # Step 7: mask 后处理
+    mask1 = post_mask(mask)
+    mask2, needs_check = fill_holes_zx(mask1)
+    mask3 = post_mask(mask2)
+
+    # Step 8: 保存 body mask
+    filename = f"{base_filename}_bodymask"
+    data_save_body(mask3, body_dir, filename)
+    cleaned_name = clean_filename(filename)
+
+    # Step 9: 返回结果
+    return {
+        "image_path": image_path,
+        "image_save_path": image_save_path,
+        "threshold": threshold,
+        "image_shape": image_shape,
+        "filename": cleaned_name,
+        "needs_check": needs_check,
+        "status": "success",
+        "means": means,
+        "covariances": covariances,
+        "weights": weights
+    }
+
+def process_images_multithreaded(input_folder: str, save_image_dir: str, body_dir: str, max_workers: int = 3) -> List[Tuple]:
     file_info = []
 
     h5_files = []
@@ -126,8 +185,8 @@ def process_images_multithreaded(input_folder: str, save_image_dir: str, body_di
     total_files = len(h5_files)
     print(f"🧾 Found {total_files} raw .h5 images in '{input_folder}'")
 
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(process_and_save_image, image_path, save_image_dir, body_dir, alpha): image_path for image_path in h5_files}
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(process_and_save_image, image_path, save_image_dir, body_dir): image_path for image_path in h5_files}
         for future in tqdm(as_completed(futures), total=len(futures), desc="Processing images"):
             try:
                 result = future.result()
@@ -138,12 +197,10 @@ def process_images_multithreaded(input_folder: str, save_image_dir: str, body_di
     return file_info
 
 def export_file_info_to_csv(
-    file_info: List[Tuple[str, str, float, Tuple[int, int, int]]],
+    file_info: List[Tuple[str, str, float, Tuple[int, int, int], str, List[float], List[float], List[float]]],
     csv_path: str,
     info_note: str = ""
 ) -> None:
-
-    # str, List[float], List[float], List[float]
     """
     Export processed image info to a CSV file.
 
@@ -155,34 +212,33 @@ def export_file_info_to_csv(
     """
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
 
-    with open(csv_path, mode='w', newline='') as csvfile:
+    with open(csv_path, mode="w", newline="", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow([
-            "Info", "Original Path", "Processed Path", "Threshold",
+            "Info",
+            "Original Path",
+            "Processed Path",
+            "Threshold",
             "Shape (Z,Y,X)",
-            # "Body Path",
-            # "Means", "Covariances", "Weights"
+            "Body Path",
+            "Means",
+            "Covariances",
+            "Weights"
         ])
 
         for entry in file_info:
-            try:
-                (
-                    orig_path, proc_path, threshold, shape
-                    # , body_path,means, covariances, weights
-                ) = entry
+            writer.writerow([
+                info_note,
+                entry["image_path"],
+                entry["image_save_path"],
+                entry["threshold"],
+                str(entry["image_shape"]),
+                entry["filename"],  # 或者 entry["image_save_path"] 看你想要什么
+                ";".join(map(lambda x: f"{x:.6f}", entry["means"])),
+                ";".join(map(lambda x: f"{x:.6f}", entry["covariances"])),
+                ";".join(map(lambda x: f"{x:.6f}", entry["weights"]))
+            ])
 
-                writer.writerow([
-                    info_note,
-                    orig_path,
-                    proc_path,
-                    threshold,
-                    str(shape),
-                    # body_path,
-                    # means,
-                    # covariances,
-                    # weights,
-                ])
-            except Exception as e:
-                print(f"⚠️ Failed to write entry to CSV: {e}")
+
 
 

@@ -23,7 +23,7 @@ def main():
     parser.add_argument("--date", "-date", required=True, help="set the experiment date, e.g. 20250418")
     # parser.add_argument("--output", "-o", required=True, help="Path to save final prediction results")
     parser.add_argument("--organ", type=str, required=True, help="please input Organ name (e.g., CNS or Nubbin)")
-    parser.add_argument("--bodyAlpha", type=float,default = 2.0, help="Tune the body segmentation area. If larger alpha, larger body")
+    # parser.add_argument("--bodyAlpha", type=float,default = 2.0, help="Tune the body segmentation area. If larger alpha, larger body")
     parser.add_argument("--folds", type=str, default="0 1 2 3 4", help="Folds to use for prediction")
 
     # postprocessing paras
@@ -61,16 +61,16 @@ def main():
     os.makedirs(pp_dir,exist_ok=True)
     workers = os.cpu_count()//2
     csv_path = os.path.join(output_2eddir, "preprocessing_summary.csv")
-    # file_info = process_images_multithreaded(args.input, imagesTs_dir, bodyMask_dir, alpha=args.bodyAlpha,max_workers=workers)
-    # export_file_info_to_csv(file_info, csv_path, info_note= args.info)
+    file_info = process_images_multithreaded(args.input, imagesTs_dir, bodyMask_dir,max_workers=workers)
+    export_file_info_to_csv(file_info, csv_path, info_note= args.info)
 
     print("🤖 Step 2: Running nnUNet prediction")
     direction = get_dataset_directory(args.organ, nnunet_raw)
-    # print(direction)
-    # prediction_dir = os.path.join(direction, "imagesTs")
-    # clear_folder(prediction_dir,remove_subdirs=True, verbose=False)
-    # copy_and_rename_files_multithreaded(csv_path,prediction_dir)
-    # run_nnUNet_prediction(prediction_dir, labelTs_dir, organ=args.organ, num_parts=args.folds)
+    print(direction)
+    prediction_dir = os.path.join(direction, "imagesTs")
+    clear_folder(prediction_dir,remove_subdirs=True, verbose=False)
+    copy_and_rename_files_multithreaded(csv_path,prediction_dir)
+    run_nnUNet_prediction(prediction_dir, labelTs_dir, organ=args.organ, num_parts=args.folds)
     #
     print("🧹 Step 3: Running postprocessing")
     pkl_file_path, plan_json= get_postprocessing_pkl_path(args.organ,nnunet_results)
@@ -88,80 +88,87 @@ def main():
 
 if __name__ == "__main__":
     tasks = [
-    #     {
-    #         "--input": r"U:\Chenglang\segmentation\dataset\Toxicology\20250716_PMMA\0.05\Good images",
-    #         "--output": r"U:\Chenglang\segmentation\dataset",
-    #         "--application": "Toxicology",
-    #         "--info": "0.05",
-    #         "--date": "20250716",
-    #         "--organ": "CNS",
-    #         "--bodyAlpha": "1.0"
-    #     },
-    #     {
-    #         "--input": r"U:\Chenglang\segmentation\dataset\Toxicology\20250716_PMMA\0.05_0.3\Good images",
-    #         "--output": r"U:\Chenglang\segmentation\dataset",
-    #         "--application": "Toxicology",
-    #         "--info": "0.05_0.3",
-    #         "--date": "20250716",
-    #         "--organ": "CNS",
-    #         "--bodyAlpha": "1.0"
-    #     },
         {
-            "--input": r"U:\Chenglang\segmentation\dataset\Toxicology\20250716_PMMA\0.05_3.0\Good images",
+            "--input": r"T:\Chenglang\classification\annotation\dataset\20250121\PFA_4%\Good images",
             "--output": r"U:\Chenglang\segmentation\dataset",
-            "--application": "Toxicology",
-            "--info": "0.05_3.0",
-            "--date": "20250716",
-            "--organ": "CNS",
-            "--bodyAlpha": "1.0"
+            "--application": "Optimization_TissueClear",
+            "--info": "4%_PFA",
+            "--date": "20250121_nubbin",
+            "--organ": "Nubbin",
+        },
+        {
+            "--input": r"T:\Chenglang\classification\annotation\dataset\20250121\PFA_9%\Good images",
+            "--output": r"U:\Chenglang\segmentation\dataset",
+            "--application": "Optimization_TissueClear",
+            "--info": "9%_PFA",
+            "--date": "20250121_nubbin",
+            "--organ": "Nubbin",
+        },
+        {
+            "--input": r"T:\Chenglang\classification\annotation\dataset\20250121\PFA_9%RT\Good images",
+            "--output": r"U:\Chenglang\segmentation\dataset",
+            "--application": "Optimization_TissueClear",
+            "--info": "9%RT_PFA",
+            "--date": "20250121_nubbin",
+            "--organ": "Nubbin",
         },
         # {
-        #     "--input": r"U:\Chenglang\segmentation\dataset\feature extraction\Test for radiomics\raw",
-        #     "--output": r"U:\Chenglang\segmentation\dataset\feature extraction",
-        #     "--application": "test",
-        #     "--info": "Drl",
-        #     "--date": "20241030",
-        #     "--organ": "CNS",
-        #     "--bodyAlpha": "2.0"
+        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250910V\20250910\control\Good images",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Toxicology",
+        #     "--info": "control",
+        #     "--date": "20250910_Sota",
+        #     "--organ": "Nubbin",
         # },
         # {
-        #     "--input": r"U:\Chenglang\segmentation\dataset\feature extraction\Drl\raw data\20241030",
-        #     "--output": r"U:\Chenglang\segmentation\dataset\feature extraction",
-        #     "--application": "Drl",
-        #     "--info": "Drl",
-        #     "--date": "20241030",
-        #     "--organ": "CNS",
-        #     "--bodyAlpha": "2.0"
-        # },
-
-        # {
-        #     "--input": r"U:\Chenglang\segmentation\dataset\feature extraction\Drl\raw data\20250307",
-        #     "--output": r"U:\Chenglang\segmentation\dataset\feature extraction",
-        #     "--application": "Drl",
-        #     "--info": "Drl",
-        #     "--date": "20250307",
-        #     "--organ": "CNS",
-        #     "--bodyAlpha": "2.0"
+        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250910V\20250910\0.5\Good images",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Toxicology",
+        #     "--info": "0.5",
+        #     "--date": "20250910_Sota",
+        #     "--organ": "Nubbin",
         # },
         # {
-        #     "--input": r"U:\Chenglang\segmentation\dataset\feature extraction\Drl\raw data\20250308",
-        #     "--output": r"U:\Chenglang\segmentation\dataset\feature extraction",
-        #     "--application": "Drl",
-        #     "--info": "Drl",
-        #     "--date": "20250308",
-        #     "--organ": "CNS",
-        #     "--bodyAlpha": "2.0"
+        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250910V\20250910\5\Good images",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Toxicology",
+        #     "--info": "5",
+        #     "--date": "20250910_Sota",
+        #     "--organ": "Nubbin",
         # },
         # {
-        #     "--input": r"U:\Chenglang\segmentation\dataset\feature extraction\Drl\raw data\20250419",
-        #     "--output": r"U:\Chenglang\segmentation\dataset\feature extraction",
-        #     "--application": "Drl",
-        #     "--info": "Drl",
-        #     "--date": "20250419",
-        #     "--organ": "CNS",
-        #     "--bodyAlpha": "2.0"
+        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250910V\20250910\50\Good images",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Toxicology",
+        #     "--info": "50",
+        #     "--date": "20250910_Sota",
+        #     "--organ": "Nubbin",
         # },
-     # 更多任务可添加在这里
+        # {
+        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250909\20250909\Control\Good images",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Toxicology",
+        #     "--info": "control",
+        #     "--date": "20250909_YT",
+        #     "--organ": "Nubbin",
+        # },
+        # {
+        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250909\20250909\3.0\Good images",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Toxicology",
+        #     "--info": "3.0",
+        #     "--date": "20250909_YT",
+        #     "--organ": "Nubbin",
+        # },
+        # {
+        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250909\20250909\30.0\Good images",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Toxicology",
+        #     "--info": "30.0",
+        #     "--date": "20250909_YT",
+        #     "--organ": "Nubbin",
+        # },
+        # 更多任务可添加在这里
     ]
 
     for task in tasks:
