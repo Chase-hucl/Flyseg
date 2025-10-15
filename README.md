@@ -101,7 +101,7 @@ flowchart LR
     A["Input h5 format images"] --> B["Preprocessing (nii format conversion, Otsu cropping, GMM-body masking)"]
     B --> C["nnUNetv2 prediction"]
     C --> D["Postprocessing (clean-up + feature extraction)"]
-    D --> E["Final outputs: prediction_mask + label_stats.csv"]
+    D --> E["Final outputs: prediction_mask + body mask + label_stats.csv"]
 ```
 ---
 
