@@ -98,8 +98,8 @@ This will automatically run preprocessing, segmentation, and postprocessing, gen
 
 ```mermaid
 flowchart LR
-    A[Input .h5 images] --> B[Preprocessing (.nii.gz conversion, Otsu, Gaussian, 3D masking)]
-    B --> C[nnUNet v2 Inference]
+    A[Input .h5 images] --> B[Preprocessing (nii format conversion, Otsu, Gaussian, 3D masking)]
+    B --> C[nnUNetv2 prediction]
     C --> D[Postprocessing (cleanup + stats)]
     D --> E[Final outputs: prediction_mask + label_stats.csv]
 ```
