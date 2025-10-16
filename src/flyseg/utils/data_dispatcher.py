@@ -91,6 +91,8 @@ def rename_files_from_csv(csv_path: str, folder: str) -> None:
             continue
 
         new_name = renamed_name.replace("_0000.nii.gz", ".nii.gz")
+        # base = os.path.basename(new_name)
+        # old_name = original_name.replace(".dcimg.h5", f"from{base}_.nii.gz")
         old_name = original_name.replace(".dcimg.h5", ".nii.gz")
 
         src = root / new_name
