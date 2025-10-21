@@ -1,0 +1,21 @@
+# Install with:
+# pip install --index-url https://download.pytorch.org/whl/cu124 -r requirements.txt
+
+# Core deep learning and data analysis libraries required by your program
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+torchaudio==2.6.0+cu124
+
+# Scientific and data libraries
+numpy==2.1.2
+scipy==1.15.3
+pandas==2.2.3
+h5py==3.13.0
+scikit-learn==1.6.1
+
+# Visualization
+matplotlib==3.10.3
+seaborn==0.13.2
+
+# Optional: progress bars and utilities (safe to remove if unused)
+tqdm>=4.66.0
