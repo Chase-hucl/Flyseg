@@ -42,9 +42,9 @@ The flyseg model currently support high-accuracy segmentation for the following 
 
 ### Example Visualizations
 <p align="center">
-  <img src="src/Segmentation%20cases/7%20tissue%20segmentation%20case.png" width="300"/>
-  <img src="src/Segmentation%20cases/CNS%20segmentation%20case.png" width="300"/>
-  <img src="src/Segmentation%20cases/Body%20case.png" width="300"/>
+  <img src="src/Segmentation%20cases/7%20tissue%20segmentation%20case.png" width="500"/>
+  <img src="src/Segmentation%20cases/CNS%20segmentation%20case.png" width="500"/>
+  <img src="src/Segmentation%20cases/Body%20case.png" width="500"/>
 </p>
 
 ### Typical Workflow
