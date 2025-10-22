@@ -5,7 +5,7 @@ from scipy.ndimage import (
     gaussian_filter, label, binary_fill_holes, binary_closing, generate_binary_structure
 )
 from skimage.filters import threshold_otsu
-from Data_read import file_read
+from flyseg.utils.flySeg_reader import file_read
 from Image_view_v3 import Image_viewer_simple
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed

@@ -5,7 +5,7 @@ from scipy.ndimage import (
     gaussian_filter, label, binary_fill_holes, binary_closing, generate_binary_structure,binary_opening, find_objects
 )
 from skimage.filters import threshold_otsu
-from FlySeg.src import file_read
+from FlySeg.src.flyseg.utils.flySeg_reader import file_read
 # from Image_view_v3 import Image_viewer_simple
 from sklearn.mixture import GaussianMixture
 

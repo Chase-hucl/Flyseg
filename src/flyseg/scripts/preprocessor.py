@@ -7,8 +7,8 @@ from scipy.ndimage import (
 )
 from sklearn.mixture import GaussianMixture
 from skimage.filters import threshold_otsu
-from FlySeg.src import file_read, data_save
-from FlySeg.src import restore_to_original_size, post_mask, fill_holes_zx, clean_filename, data_save_body
+from FlySeg.src.flyseg.utils.flySeg_reader import file_read, data_save
+from FlySeg.src.flyseg.utils.GMM_Body import restore_to_original_size, post_mask, fill_holes_zx, clean_filename, data_save_body
 # from flyseg.utils.GMM_HMRF_Body import mask_save, Body_processor,GMM_HMRF_body
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
