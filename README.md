@@ -41,9 +41,11 @@ The flyseg model currently support high-accuracy segmentation for the following 
 - **Body (whole contour)**  
 
 ### Example Visualizations
-- ![Central nervous system / Wing disc / Salivary gland / Proventriculus](src/Segmentation%20cases/7%20tissue%20segmentation%20case.png)
-- ![Central nervous system](src/Segmentation%20cases/CNS%20segmentation%20case.png)
-- ![Body surface](src/Segmentation%20cases/Body%20case.png)
+<p align="center">
+  <img src="src/Segmentation%20cases/7%20tissue%20segmentation%20case.png" width="300"/>
+  <img src="src/Segmentation%20cases/CNS%20segmentation%20case.png" width="300"/>
+  <img src="src/Segmentation%20cases/Body%20case.png" width="300"/>
+</p>
 
 ### Typical Workflow
 1. Convert `.h5` 3D imaging data into nnUNet-compatible format.  
