@@ -1,0 +1,17 @@
+README.md
+setup.py
+src/flyseg/__init__.py
+src/flyseg/nnunet_config.py
+src/flyseg/nnunet_runner.py
+src/flyseg/postprocessor.py
+src/flyseg/prediction.py
+src/flyseg/preprocessor.py
+src/flyseg.egg-info/PKG-INFO
+src/flyseg.egg-info/SOURCES.txt
+src/flyseg.egg-info/dependency_links.txt
+src/flyseg.egg-info/entry_points.txt
+src/flyseg.egg-info/top_level.txt
+src/flyseg/utils/__init__.py
+src/flyseg/utils/data_dispatcher.py
+src/flyseg/utils/flySeg_reader.py
+src/flyseg/utils/folder_cleaner.py

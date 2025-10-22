@@ -1,5 +1,5 @@
 # Ignore pretrained model weights
-pretrained_model/
+../../pretrained_model/
 *.zip
 
 # Python & build artifacts

@@ -1,12 +1,12 @@
 import argparse
 import os
-from flyseg.nnunet_config import configure_nnunet_environment, ensure_model_downloaded,clean_model_cache
-from flyseg.nnunet_runner import run_nnUNet_prediction, apply_postprocessing,get_dataset_directory,get_postprocessing_pkl_path
-from flyseg.preprocessor import process_images_multithreaded
-from flyseg.preprocessor import export_file_info_to_csv
+from flyseg.scripts.nnunet_config import configure_nnunet_environment, ensure_model_downloaded
+from flyseg.scripts.nnunet_runner import run_nnUNet_prediction, apply_postprocessing,get_dataset_directory,get_postprocessing_pkl_path
+from flyseg.scripts.preprocessor import process_images_multithreaded
+from flyseg.scripts.preprocessor import export_file_info_to_csv
 from flyseg.utils.folder_cleaner import clear_folder
 from flyseg.utils.data_dispatcher import copy_and_rename_files_multithreaded,rename_files_from_csv
-from flyseg.postprocessor import analyze_label_folder, process_folder
+from flyseg.scripts.postprocessor import analyze_label_folder, process_folder
 import sys
 import torch
 
@@ -89,77 +89,45 @@ def main():
 if __name__ == "__main__":
     tasks = [
         # {
-        #     "--input": r"U:\Chenglang\segmentation\dataset\Optimization_TissueClear\20250121_nubbin\4%_PFA\imagesTs",
+        #     "--input": r"\\FZ_NAS0\home\20251020\90392\h5_affined",
         #     "--output": r"U:\Chenglang\segmentation\dataset",
         #     "--application": "Optimization_TissueClear",
         #     "--info": "4%_PFA",
-        #     "--date": "20250121_nubbin",
-        #     "--organ": "Nubbin",
+        #     "--date": "20251020_drl_PFA-PUT-ADH",
+        #     "--organ": "CNS",
         # },
         {
-            "--input": r"H:\Classification\annotation\dataset\20251002\0.01Combination_63148\Control\Good images",
+            "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251016\0.01Combination_63148\Control\Good images",
             "--output": r"U:\Chenglang\segmentation\dataset",
             "--application": "Toxicology",
             "--info": "Control",
-            "--date": "20251002_nubbin_Yuya",
+            "--date": "20251016_nubbin_Yuya",
             "--organ": "Nubbin",
         },
         {
-            "--input": r"H:\home\Classification\annotation\dataset\20251002\0.01Combination_63148\0.01\Good images",
+            "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251016\0.01Combination_63148\0.01\Good images",
             "--output": r"U:\Chenglang\segmentation\dataset",
             "--application": "Toxicology",
             "--info": "0.01",
-            "--date": "20251002_nubbin_Yuya",
+            "--date": "20251016_nubbin_Yuya",
             "--organ": "Nubbin",
         },
-        # {
-        #     "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251002\0.01Combination_63148\0.01_0.3\Good images",
-        #     "--output": r"U:\Chenglang\segmentation\dataset",
-        #     "--application": "Toxicology",
-        #     "--info": "0.01_0.3",
-        #     "--date": "20251002_nubbin_Yuya",
-        #     "--organ": "Nubbin",
-        # },
         {
-            "--input": r"H:\home\Classification\annotation\dataset\20251002\0.01Combination_63148\0.01_3.0\Good images",
+            "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251016\0.01Combination_63148\0.01_0.3\Good images",
+            "--output": r"U:\Chenglang\segmentation\dataset",
+            "--application": "Toxicology",
+            "--info": "0.01_0.3",
+            "--date": "20251016_nubbin_Yuya",
+            "--organ": "Nubbin",
+        },
+        {
+            "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251016\0.01Combination_63148\0.01_3.0\Good images",
             "--output": r"U:\Chenglang\segmentation\dataset",
             "--application": "Toxicology",
             "--info": "0.01_3.0",
-            "--date": "20251002_nubbin_Yuya",
+            "--date": "20251016_nubbin_Yuya",
             "--organ": "Nubbin",
         },
-        # {
-        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250121\PFA_9%RT\Good images",
-        #     "--output": r"U:\Chenglang\segmentation\dataset",
-        #     "--application": "Optimization_TissueClear",
-        #     "--info": "9%RT_PFA",
-        #     "--date": "20250121_nubbin",
-        #     "--organ": "Nubbin",
-        # },
-        # {
-        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250910V\20250910\control\Good images",
-        #     "--output": r"U:\Chenglang\segmentation\dataset",
-        #     "--application": "Toxicology",
-        #     "--info": "control",
-        #     "--date": "20250910_Sota",
-        #     "--organ": "Nubbin",
-        # },
-        # {
-        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250910V\20250910\0.5\Good images",
-        #     "--output": r"U:\Chenglang\segmentation\dataset",
-        #     "--application": "Toxicology",
-        #     "--info": "0.5",
-        #     "--date": "20250910_Sota",
-        #     "--organ": "Nubbin",
-        # },
-        # {
-        #     "--input": r"T:\Chenglang\classification\annotation\dataset\20250910V\20250910\5\Good images",
-        #     "--output": r"U:\Chenglang\segmentation\dataset",
-        #     "--application": "Toxicology",
-        #     "--info": "5",
-        #     "--date": "20250910_Sota",
-        #     "--organ": "Nubbin",
-        # },
         # 更多任务可添加在这里
     ]
 

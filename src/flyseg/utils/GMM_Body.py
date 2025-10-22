@@ -5,12 +5,8 @@ from scipy.ndimage import (
     gaussian_filter, label, binary_fill_holes, binary_closing, generate_binary_structure,binary_opening, find_objects
 )
 from skimage.filters import threshold_otsu
-from flyseg.utils.flySeg_reader import file_read
+from flyseg import file_read
 # from Image_view_v3 import Image_viewer_simple
-import pandas as pd
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from tqdm import tqdm
-import traceback
 from sklearn.mixture import GaussianMixture
 
 def fill_holes_by_slice(mask):

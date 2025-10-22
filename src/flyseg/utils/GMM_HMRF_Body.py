@@ -1,16 +1,8 @@
 import numpy as np
-from openpyxl.styles.builtins import output
-from scipy.ndimage import (gaussian_filter, label, binary_fill_holes, find_objects,
-                           binary_opening, binary_closing, generate_binary_structure)
-from tqdm import tqdm
-from skimage.filters import threshold_otsu
+from scipy.ndimage import (gaussian_filter, label, binary_fill_holes)
 from sklearn.mixture import GaussianMixture
-from  flyseg.utils import flySeg_reader
 from numba import njit, prange
-import pandas as pd
 import os
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import traceback
 import nibabel as nib
 
 def mask_save(mask, save_dir, filename, dtype=np.uint8):

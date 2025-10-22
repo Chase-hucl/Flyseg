@@ -1,0 +1,218 @@
+
+#######################################################################
+Please cite the following paper when using nnU-Net:
+Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature methods, 18(2), 203-211.
+#######################################################################
+ 
+
+This is the configuration used by this training:
+Configuration name: 3d_fullres
+ {'data_identifier': 'nnUNetPlans_3d_fullres', 'preprocessor_name': 'DefaultPreprocessor', 'batch_size': 8, 'patch_size': [256, 112, 80], 'median_image_size_in_voxels': [493.0, 148.0, 116.0], 'spacing': [1.0, 1.0, 1.0], 'normalization_schemes': ['ZScoreNormalization'], 'use_mask_for_norm': [True], 'UNet_class_name': 'PlainConvUNet', 'UNet_base_num_features': 32, 'n_conv_per_stage_encoder': [2, 2, 2, 2, 2, 2], 'n_conv_per_stage_decoder': [2, 2, 2, 2, 2], 'num_pool_per_axis': [5, 4, 4], 'pool_op_kernel_sizes': [[1, 1, 1], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 1, 1]], 'conv_kernel_sizes': [[3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3]], 'unet_max_num_features': 320, 'resampling_fn_data': 'resample_data_or_seg_to_shape', 'resampling_fn_seg': 'resample_data_or_seg_to_shape', 'resampling_fn_data_kwargs': {'is_seg': False, 'order': 3, 'order_z': 0, 'force_separate_z': None}, 'resampling_fn_seg_kwargs': {'is_seg': True, 'order': 1, 'order_z': 0, 'force_separate_z': None}, 'resampling_fn_probabilities': 'resample_data_or_seg_to_shape', 'resampling_fn_probabilities_kwargs': {'is_seg': False, 'order': 1, 'order_z': 0, 'force_separate_z': None}, 'batch_dice': False} 
+ 
+These are the global plan.json settings:
+ {'dataset_name': 'Dataset999_drl', 'plans_name': 'nnUNetPlans', 'original_median_spacing_after_transp': [1.0, 1.0, 1.0], 'original_median_shape_after_transp': [493, 148, 116], 'image_reader_writer': 'SimpleITKIO', 'transpose_forward': [0, 1, 2], 'transpose_backward': [0, 1, 2], 'experiment_planner_used': 'ExperimentPlanner', 'label_manager': 'LabelManager', 'foreground_intensity_properties_per_channel': {'0': {'max': 65535.0, 'mean': 6488.5908203125, 'median': 3600.0, 'min': 0.0, 'percentile_00_5': 597.0, 'percentile_99_5': 31668.0, 'std': 6411.76708984375}}} 
+ 
+2025-07-22 16:49:44.764111: unpacking dataset... 
+2025-07-22 16:49:47.623006: unpacking done... 
+2025-07-22 16:49:47.627263: do_dummy_2d_data_aug: False 
+2025-07-22 16:49:47.630540: Using splits from existing split file: /home/Finds/CH/nnUNet/nnUNet_preprocessed/Dataset999_drl/splits_final.json 
+2025-07-22 16:49:47.631008: The split file contains 5 splits. 
+2025-07-22 16:49:47.631055: Desired fold for training: 1 
+2025-07-22 16:49:47.631080: This split has 745 training and 187 validation cases. 
+2025-07-22 16:49:51.020417: Unable to plot network architecture: 
+2025-07-22 16:49:51.020680: failed to execute PosixPath('dot'), make sure the Graphviz executables are on your systems' PATH 
+2025-07-22 16:49:51.489001: Training done. 
+2025-07-22 16:49:51.588014: Using splits from existing split file: /home/Finds/CH/nnUNet/nnUNet_preprocessed/Dataset999_drl/splits_final.json 
+2025-07-22 16:49:51.589264: The split file contains 5 splits. 
+2025-07-22 16:49:51.589355: Desired fold for training: 1 
+2025-07-22 16:49:51.589416: This split has 745 training and 187 validation cases. 
+2025-07-22 16:49:51.590920: predicting FINDS_0003 
+2025-07-22 16:49:51.593233: FINDS_0003, shape torch.Size([1, 595, 163, 125]), rank 0 
+2025-07-22 16:49:57.080163: predicting FINDS_0007 
+2025-07-22 16:49:57.096602: FINDS_0007, shape torch.Size([1, 563, 183, 116]), rank 0 
+2025-07-22 16:50:01.407080: predicting FINDS_0011 
+2025-07-22 16:50:01.418958: FINDS_0011, shape torch.Size([1, 565, 223, 115]), rank 0 
+2025-07-22 16:50:05.747747: predicting FINDS_0021 
+2025-07-22 16:50:05.764246: FINDS_0021, shape torch.Size([1, 624, 193, 129]), rank 0 
+2025-07-22 16:50:12.270627: predicting FINDS_0025 
+2025-07-22 16:50:12.282056: FINDS_0025, shape torch.Size([1, 561, 143, 122]), rank 0 
+2025-07-22 16:50:16.667039: predicting FINDS_0031 
+2025-07-22 16:50:16.679731: FINDS_0031, shape torch.Size([1, 693, 161, 133]), rank 0 
+2025-07-22 16:50:22.157464: predicting FINDS_0046 
+2025-07-22 16:50:22.169996: FINDS_0046, shape torch.Size([1, 526, 154, 118]), rank 0 
+2025-07-22 16:50:25.145115: predicting FINDS_0054 
+2025-07-22 16:50:25.159148: FINDS_0054, shape torch.Size([1, 493, 166, 132]), rank 0 
+2025-07-22 16:50:28.594178: predicting FINDS_0061 
+2025-07-22 16:50:28.601385: FINDS_0061, shape torch.Size([1, 446, 154, 133]), rank 0 
+2025-07-22 16:50:31.981969: predicting FINDS_0064 
+2025-07-22 16:50:31.992971: FINDS_0064, shape torch.Size([1, 474, 123, 124]), rank 0 
+2025-07-22 16:50:35.434109: predicting FINDS_0068 
+2025-07-22 16:50:35.441910: FINDS_0068, shape torch.Size([1, 453, 149, 116]), rank 0 
+2025-07-22 16:50:37.729166: predicting FINDS_0100 
+2025-07-22 16:50:37.736166: FINDS_0100, shape torch.Size([1, 562, 154, 127]), rank 0 
+2025-07-22 16:50:42.213858: predicting FINDS_0114 
+2025-07-22 16:50:42.227138: FINDS_0114, shape torch.Size([1, 491, 181, 126]), rank 0 
+2025-07-22 16:50:47.325145: predicting FINDS_0128 
+2025-07-22 16:50:47.336590: FINDS_0128, shape torch.Size([1, 531, 164, 128]), rank 0 
+2025-07-22 16:50:51.880620: predicting FINDS_0136 
+2025-07-22 16:50:51.892238: FINDS_0136, shape torch.Size([1, 477, 145, 111]), rank 0 
+2025-07-22 16:50:54.218233: predicting FINDS_0139 
+2025-07-22 16:50:54.231910: FINDS_0139, shape torch.Size([1, 477, 145, 111]), rank 0 
+2025-07-22 16:50:56.545827: predicting FINDS_0149 
+2025-07-22 16:50:56.553246: FINDS_0149, shape torch.Size([1, 498, 141, 125]), rank 0 
+2025-07-22 16:51:00.027603: predicting FINDS_0154 
+2025-07-22 16:51:00.041947: FINDS_0154, shape torch.Size([1, 636, 148, 121]), rank 0 
+2025-07-22 16:51:04.634342: predicting FINDS_0158 
+2025-07-22 16:51:04.646554: FINDS_0158, shape torch.Size([1, 524, 139, 118]), rank 0 
+2025-07-22 16:51:07.737756: predicting FINDS_0178 
+2025-07-22 16:51:07.746874: FINDS_0178, shape torch.Size([1, 467, 147, 112]), rank 0 
+2025-07-22 16:51:19.904319: predicting FINDS_0191 
+2025-07-22 16:51:19.915615: FINDS_0191, shape torch.Size([1, 579, 137, 133]), rank 0 
+2025-07-22 16:51:24.493337: predicting FINDS_0201 
+2025-07-22 16:51:24.504154: FINDS_0201, shape torch.Size([1, 616, 193, 134]), rank 0 
+2025-07-22 16:51:31.348077: predicting FINDS_0213 
+2025-07-22 16:51:31.360364: FINDS_0213, shape torch.Size([1, 555, 149, 116]), rank 0 
+2025-07-22 16:51:34.459466: predicting FINDS_0220 
+2025-07-22 16:51:34.473027: FINDS_0220, shape torch.Size([1, 544, 132, 128]), rank 0 
+2025-07-22 16:51:39.108235: predicting FINDS_0253 
+2025-07-22 16:51:39.117775: FINDS_0253, shape torch.Size([1, 468, 146, 122]), rank 0 
+2025-07-22 16:51:42.606750: predicting FINDS_0266 
+2025-07-22 16:51:42.628597: FINDS_0266, shape torch.Size([1, 462, 210, 113]), rank 0 
+2025-07-22 16:51:46.137914: predicting FINDS_0292 
+2025-07-22 16:51:46.144609: FINDS_0292, shape torch.Size([1, 531, 116, 103]), rank 0 
+2025-07-22 16:51:49.263325: predicting FINDS_0300 
+2025-07-22 16:51:49.273719: FINDS_0300, shape torch.Size([1, 548, 187, 123]), rank 0 
+2025-07-22 16:51:56.250876: predicting FINDS_0310 
+2025-07-22 16:51:56.261721: FINDS_0310, shape torch.Size([1, 484, 214, 107]), rank 0 
+2025-07-22 16:51:59.803117: predicting FINDS_0327 
+2025-07-22 16:51:59.813155: FINDS_0327, shape torch.Size([1, 573, 147, 133]), rank 0 
+2025-07-22 16:52:04.510695: predicting FINDS_0343 
+2025-07-22 16:52:04.521152: FINDS_0343, shape torch.Size([1, 549, 159, 121]), rank 0 
+2025-07-22 16:52:09.225253: predicting FINDS_0366 
+2025-07-22 16:52:09.236033: FINDS_0366, shape torch.Size([1, 620, 208, 122]), rank 0 
+2025-07-22 16:52:16.268606: predicting FINDS_0370 
+2025-07-22 16:52:16.278479: FINDS_0370, shape torch.Size([1, 477, 138, 133]), rank 0 
+2025-07-22 16:52:19.845373: predicting FINDS_0377 
+2025-07-22 16:52:19.857503: FINDS_0377, shape torch.Size([1, 449, 128, 89]), rank 0 
+2025-07-22 16:52:22.226676: predicting FINDS_0390 
+2025-07-22 16:52:22.235464: FINDS_0390, shape torch.Size([1, 471, 160, 132]), rank 0 
+2025-07-22 16:52:25.937305: predicting FINDS_0414 
+2025-07-22 16:52:25.948512: FINDS_0414, shape torch.Size([1, 420, 122, 124]), rank 0 
+2025-07-22 16:52:29.521993: predicting FINDS_0424 
+2025-07-22 16:52:29.533795: FINDS_0424, shape torch.Size([1, 471, 193, 133]), rank 0 
+2025-07-22 16:52:34.873448: predicting FINDS_0428 
+2025-07-22 16:52:34.883182: FINDS_0428, shape torch.Size([1, 457, 183, 111]), rank 0 
+2025-07-22 16:52:38.464127: predicting FINDS_0435 
+2025-07-22 16:52:38.472250: FINDS_0435, shape torch.Size([1, 533, 161, 114]), rank 0 
+2025-07-22 16:52:41.739250: predicting FINDS_0445 
+2025-07-22 16:52:41.747013: FINDS_0445, shape torch.Size([1, 489, 121, 124]), rank 0 
+2025-07-22 16:52:45.360398: predicting FINDS_0447 
+2025-07-22 16:52:45.374261: FINDS_0447, shape torch.Size([1, 489, 121, 124]), rank 0 
+2025-07-22 16:52:49.017965: predicting FINDS_0455 
+2025-07-22 16:52:49.029076: FINDS_0455, shape torch.Size([1, 312, 213, 107]), rank 0 
+2025-07-22 16:52:51.438787: predicting FINDS_0468 
+2025-07-22 16:52:51.445975: FINDS_0468, shape torch.Size([1, 462, 125, 106]), rank 0 
+2025-07-22 16:52:53.854560: predicting FINDS_0474 
+2025-07-22 16:52:53.867893: FINDS_0474, shape torch.Size([1, 375, 150, 129]), rank 0 
+2025-07-22 16:52:56.265073: predicting FINDS_0481 
+2025-07-22 16:52:56.273880: FINDS_0481, shape torch.Size([1, 367, 131, 134]), rank 0 
+2025-07-22 16:52:58.683635: predicting FINDS_0489 
+2025-07-22 16:52:58.694598: FINDS_0489, shape torch.Size([1, 425, 137, 97]), rank 0 
+2025-07-22 16:53:01.115093: predicting FINDS_0496 
+2025-07-22 16:53:01.122325: FINDS_0496, shape torch.Size([1, 421, 135, 100]), rank 0 
+2025-07-22 16:53:03.541170: predicting FINDS_0499 
+2025-07-22 16:53:03.551262: FINDS_0499, shape torch.Size([1, 421, 135, 100]), rank 0 
+2025-07-22 16:53:05.981724: predicting FINDS_0504 
+2025-07-22 16:53:05.996272: FINDS_0504, shape torch.Size([1, 415, 133, 87]), rank 0 
+2025-07-22 16:53:08.394614: predicting FINDS_0509 
+2025-07-22 16:53:08.401189: FINDS_0509, shape torch.Size([1, 471, 103, 80]), rank 0 
+2025-07-22 16:53:09.058881: predicting FINDS_0513 
+2025-07-22 16:53:09.069885: FINDS_0513, shape torch.Size([1, 395, 100, 96]), rank 0 
+2025-07-22 16:53:10.329922: predicting FINDS_0530 
+2025-07-22 16:53:10.340838: FINDS_0530, shape torch.Size([1, 408, 129, 111]), rank 0 
+2025-07-22 16:53:12.782266: predicting FINDS_0532 
+2025-07-22 16:53:12.791161: FINDS_0532, shape torch.Size([1, 424, 185, 115]), rank 0 
+2025-07-22 16:53:16.378310: predicting FINDS_0545 
+2025-07-22 16:53:16.386104: FINDS_0545, shape torch.Size([1, 457, 118, 115]), rank 0 
+2025-07-22 16:53:18.807315: predicting FINDS_0549 
+2025-07-22 16:53:18.819710: FINDS_0549, shape torch.Size([1, 400, 181, 121]), rank 0 
+2025-07-22 16:53:24.114016: predicting FINDS_0553 
+2025-07-22 16:53:24.124161: FINDS_0553, shape torch.Size([1, 492, 141, 106]), rank 0 
+2025-07-22 16:53:26.554140: predicting FINDS_0566 
+2025-07-22 16:53:26.563940: FINDS_0566, shape torch.Size([1, 459, 149, 111]), rank 0 
+2025-07-22 16:53:28.986213: predicting FINDS_0569 
+2025-07-22 16:53:29.001113: FINDS_0569, shape torch.Size([1, 463, 119, 94]), rank 0 
+2025-07-22 16:53:31.428709: predicting FINDS_0578 
+2025-07-22 16:53:31.436200: FINDS_0578, shape torch.Size([1, 506, 239, 112]), rank 0 
+2025-07-22 16:53:36.266356: predicting FINDS_0583 
+2025-07-22 16:53:36.278222: FINDS_0583, shape torch.Size([1, 425, 141, 98]), rank 0 
+2025-07-22 16:53:38.865074: predicting FINDS_0585 
+2025-07-22 16:53:38.870229: FINDS_0585, shape torch.Size([1, 464, 118, 86]), rank 0 
+2025-07-22 16:53:41.315987: predicting FINDS_0603 
+2025-07-22 16:53:41.325544: FINDS_0603, shape torch.Size([1, 360, 107, 87]), rank 0 
+2025-07-22 16:53:42.178071: predicting FINDS_0622 
+2025-07-22 16:53:42.187609: FINDS_0622, shape torch.Size([1, 447, 119, 92]), rank 0 
+2025-07-22 16:53:44.611628: predicting FINDS_0634 
+2025-07-22 16:53:44.621870: FINDS_0634, shape torch.Size([1, 540, 138, 123]), rank 0 
+2025-07-22 16:53:49.439368: predicting FINDS_0644 
+2025-07-22 16:53:49.446352: FINDS_0644, shape torch.Size([1, 443, 140, 95]), rank 0 
+2025-07-22 16:53:51.890102: predicting FINDS_0660 
+2025-07-22 16:53:51.903170: FINDS_0660, shape torch.Size([1, 499, 171, 134]), rank 0 
+2025-07-22 16:53:57.272450: predicting FINDS_0673 
+2025-07-22 16:53:57.282518: FINDS_0673, shape torch.Size([1, 516, 136, 109]), rank 0 
+2025-07-22 16:54:00.491129: predicting FINDS_0680 
+2025-07-22 16:54:00.504208: FINDS_0680, shape torch.Size([1, 512, 163, 105]), rank 0 
+2025-07-22 16:54:02.949851: predicting FINDS_0689 
+2025-07-22 16:54:02.959238: FINDS_0689, shape torch.Size([1, 450, 145, 124]), rank 0 
+2025-07-22 16:54:06.563083: predicting FINDS_0697 
+2025-07-22 16:54:06.571012: FINDS_0697, shape torch.Size([1, 455, 191, 106]), rank 0 
+2025-07-22 16:54:10.183470: predicting FINDS_0709 
+2025-07-22 16:54:10.195947: FINDS_0709, shape torch.Size([1, 504, 168, 115]), rank 0 
+2025-07-22 16:54:12.670166: predicting FINDS_0721 
+2025-07-22 16:54:12.676378: FINDS_0721, shape torch.Size([1, 425, 152, 112]), rank 0 
+2025-07-22 16:54:15.142864: predicting FINDS_0734 
+2025-07-22 16:54:15.152762: FINDS_0734, shape torch.Size([1, 386, 164, 116]), rank 0 
+2025-07-22 16:54:17.595042: predicting FINDS_0739 
+2025-07-22 16:54:17.603516: FINDS_0739, shape torch.Size([1, 315, 182, 85]), rank 0 
+2025-07-22 16:54:20.001893: predicting FINDS_0755 
+2025-07-22 16:54:20.017206: FINDS_0755, shape torch.Size([1, 365, 113, 81]), rank 0 
+2025-07-22 16:54:21.640139: predicting FINDS_0770 
+2025-07-22 16:54:21.648829: FINDS_0770, shape torch.Size([1, 443, 193, 100]), rank 0 
+2025-07-22 16:54:25.263384: predicting FINDS_0777 
+2025-07-22 16:54:25.273139: FINDS_0777, shape torch.Size([1, 483, 137, 104]), rank 0 
+2025-07-22 16:54:27.719020: predicting FINDS_0781 
+2025-07-22 16:54:27.727919: FINDS_0781, shape torch.Size([1, 395, 135, 105]), rank 0 
+2025-07-22 16:54:30.164266: predicting FINDS_0785 
+2025-07-22 16:54:30.177075: FINDS_0785, shape torch.Size([1, 404, 136, 118]), rank 0 
+2025-07-22 16:54:32.634768: predicting FINDS_0791 
+2025-07-22 16:54:32.644917: FINDS_0791, shape torch.Size([1, 457, 144, 95]), rank 0 
+2025-07-22 16:54:38.410512: predicting FINDS_0812 
+2025-07-22 16:54:38.416544: FINDS_0812, shape torch.Size([1, 424, 126, 95]), rank 0 
+2025-07-22 16:54:40.862278: predicting FINDS_0820 
+2025-07-22 16:54:40.882565: FINDS_0820, shape torch.Size([1, 498, 145, 102]), rank 0 
+2025-07-22 16:54:43.335825: predicting FINDS_0841 
+2025-07-22 16:54:43.349918: FINDS_0841, shape torch.Size([1, 540, 133, 111]), rank 0 
+2025-07-22 16:54:46.572319: predicting FINDS_0846 
+2025-07-22 16:54:46.592702: FINDS_0846, shape torch.Size([1, 449, 118, 94]), rank 0 
+2025-07-22 16:54:48.989958: predicting FINDS_0858 
+2025-07-22 16:54:48.999330: FINDS_0858, shape torch.Size([1, 463, 112, 93]), rank 0 
+2025-07-22 16:54:50.257135: predicting FINDS_0884 
+2025-07-22 16:54:50.266993: FINDS_0884, shape torch.Size([1, 607, 159, 130]), rank 0 
+2025-07-22 16:54:55.074776: predicting FINDS_0889 
+2025-07-22 16:54:55.088544: FINDS_0889, shape torch.Size([1, 476, 171, 133]), rank 0 
+2025-07-22 16:55:00.508638: predicting FINDS_0895 
+2025-07-22 16:55:00.518860: FINDS_0895, shape torch.Size([1, 545, 175, 133]), rank 0 
+2025-07-22 16:55:07.630633: predicting FINDS_0897 
+2025-07-22 16:55:07.638138: FINDS_0897, shape torch.Size([1, 708, 173, 128]), rank 0 
+2025-07-22 16:55:16.551083: predicting FINDS_0902 
+2025-07-22 16:55:16.564631: FINDS_0902, shape torch.Size([1, 555, 138, 134]), rank 0 
+2025-07-22 16:55:21.351547: predicting FINDS_0911 
+2025-07-22 16:55:21.362036: FINDS_0911, shape torch.Size([1, 451, 155, 119]), rank 0 
+2025-07-22 16:55:23.801752: predicting FINDS_0917 
+2025-07-22 16:55:23.812700: FINDS_0917, shape torch.Size([1, 421, 134, 109]), rank 0 
+2025-07-22 16:55:26.245616: predicting FINDS_0921 
+2025-07-22 16:55:26.261839: FINDS_0921, shape torch.Size([1, 443, 115, 109]), rank 0 
+2025-07-22 16:55:28.767778: predicting FINDS_0932 
+2025-07-22 16:55:28.777161: FINDS_0932, shape torch.Size([1, 468, 148, 121]), rank 0 
+2025-07-22 16:56:14.603042: Validation complete 
+2025-07-22 16:56:14.603263: Mean Validation Dice:  0.9836063641344531 

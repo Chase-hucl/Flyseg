@@ -1,0 +1,2 @@
+[console_scripts]
+flyseg-predict = flyseg.prediction:main
