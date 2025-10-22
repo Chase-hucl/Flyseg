@@ -1,12 +1,12 @@
 import argparse
 import os
-from flyseg.scripts.nnunet_config import configure_nnunet_environment, ensure_model_downloaded
-from flyseg.scripts.nnunet_runner import run_nnUNet_prediction, apply_postprocessing,get_dataset_directory,get_postprocessing_pkl_path
-from flyseg.scripts.preprocessor import process_images_multithreaded
-from flyseg.scripts.preprocessor import export_file_info_to_csv
-from flyseg.utils.folder_cleaner import clear_folder
-from flyseg.utils.data_dispatcher import copy_and_rename_files_multithreaded,rename_files_from_csv
-from flyseg.scripts.postprocessor import analyze_label_folder, process_folder
+from FlySeg.src import configure_nnunet_environment, ensure_model_downloaded
+from FlySeg.src import run_nnUNet_prediction, apply_postprocessing,get_dataset_directory,get_postprocessing_pkl_path
+from FlySeg.src import process_images_multithreaded
+from FlySeg.src import export_file_info_to_csv
+from FlySeg.src import clear_folder
+from FlySeg.src import copy_and_rename_files_multithreaded,rename_files_from_csv
+from FlySeg.src import analyze_label_folder, process_folder
 import sys
 import torch
 

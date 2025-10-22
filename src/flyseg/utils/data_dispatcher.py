@@ -1,11 +1,10 @@
-import os,re
 import pandas as pd
 from tqdm import tqdm
 from typing import Dict, List
 import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import numpy as np
-from flyseg.utils.flySeg_reader import file_read,data_save
+
 
 def process_row_with_index(index: int, row: pd.Series, destination_folder: str) -> Dict:
     """

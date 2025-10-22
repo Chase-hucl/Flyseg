@@ -4,7 +4,7 @@ import os
 import csv
 import nibabel as nib
 from tqdm import tqdm
-from flyseg.utils.flySeg_reader import file_read
+from FlySeg.src import file_read
 from concurrent.futures import ThreadPoolExecutor
 import multiprocessing
 
