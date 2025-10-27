@@ -117,8 +117,8 @@ A **LabView-based graphical control system** enabling real-time automation and s
 
 ## 📬 Contact
 
-- **Code Maintainer:** Chenglang Hu, Md Al Mehedi Hasan, Hanqin Wang
-- **Email:** huchenglang123@gmail.com  
+- **Code Maintainer:** Chenglang Hu, Walker Peterson, Md Al Mehedi Hasan, Hanqin Wang
+- **Email:** hu-chenglang@g.ecc.u-tokyo.ac.jp  
 - **Issues & Contributions:** please cite the paper for your kind usage of the codes.
 bioRxiv: 10.1101/2024.04.04.588032v1](https://www.biorxiv.org/content/10.1101/2024.04.04.588032v1)
 
