@@ -10,24 +10,24 @@ if __package__ in (None, ""):
     # add .../FlySeg/src to sys.path
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     # ---- absolute imports when run as a script ----
-    from FlySeg.src.flyseg.scripts.nnunet_config import (
+    from .nnunet_config import (
         configure_nnunet_environment,
         ensure_model_downloaded,
     )
-    from FlySeg.src.flyseg.scripts.nnunet_runner import (
+    from .nnunet_runner import (
         run_nnUNet_prediction,          # <-- keep lower-case 'nnunet'
         apply_postprocessing,
         get_dataset_directory,
         get_postprocessing_pkl_path,
     )
-    from FlySeg.src.flyseg.scripts.preprocessor  import process_images_multithreaded
-    from FlySeg.src.flyseg.scripts.preprocessor import export_file_info_to_csv
+    from .preprocessor  import process_images_multithreaded
+    from .preprocessor import export_file_info_to_csv
     from flyseg.utils.folder_cleaner import clear_folder
     from flyseg.utils.data_dispatcher import (
         copy_and_rename_files_multithreaded,
         rename_files_from_csv,
     )
-    from FlySeg.src.flyseg.scripts.postprocessor import analyze_label_folder, process_folder
+    from .postprocessor import analyze_label_folder, process_folder
 else:
     # ---- relative imports when run as a package (-m) ----
     from .nnunet_config import (

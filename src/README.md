@@ -34,7 +34,7 @@ pip install -r requirements.txt
 ## 🚀 Usage Example
 
 ```bash
-python -m flyseg.prediction   --input "T:\Chenglang\classification\annotation\dataset\20250415\20250415\Control\Good images\test"   --output "T:\Chenglang\test"   --application Toxicology   --info PMMA_control   --date 20250415   --organ CNS
+python -m flyseg.scripts.prediction  --input "T:\Chenglang\classification\annotation\dataset\20250415\20250415\Control\Good images\test"   --output "T:\Chenglang\test"   --application Toxicology   --info PMMA_control   --date 20250415   --organ CNS
 ```
 
 ### Parameters
@@ -89,7 +89,7 @@ pip uninstall flyseg
 ```
 
 ```bash
-python -m flyseg.prediction   --input "./test_data"   --output "./results"   --organ Nubbin
+python -m flyseg.scripts.prediction   --input "./test_data"   --output "./results"   --organ Nubbin
 ```
 
 This will automatically run preprocessing, segmentation, and postprocessing, generating final masks and label statistics.  
