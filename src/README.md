@@ -21,7 +21,7 @@ It enables automated processing and segmentation of `.h5` 3D fluorescence imagin
 
 1. **Install via pip:**
 ```bash
-pip install git+https://github.com/Chase-hucl/Flyseg.git
+pip install "git+https://github.com/Chase-hucl/Flyseg.git#subdirectory=src"
 ```
 
 2. **(Optional) Install dependencies manually:**

@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 def get_dataset_directory(organ: str, nnunet_raw: str) -> str:
     """
@@ -135,6 +136,14 @@ def apply_postprocessing(input_dir, output_dir, pp_pkl_file, np=8, plans_json=No
         "-pp_pkl_file", pp_pkl_file,
         "-np", str(np)
     ]
+    # command = [
+    #     sys.executable, "-c",
+    #     "import torch; from nnunetv2.postprocessing.remove_connected_components import entry_point_apply_postprocessing; entry_point_apply_postprocessing()",
+    #     "-i", input_dir,
+    #     "-o", output_dir,
+    #     "-pp_pkl_file", pp_pkl_file,
+    #     "-np", str(np)
+    # ]
 
     if plans_json:
         command.extend(["-plans_json", plans_json])
