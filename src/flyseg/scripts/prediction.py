@@ -129,45 +129,61 @@ def main():
 
 if __name__ == "__main__":
     tasks = [
+        # {
+        #     "--input": r"\\FZ_NAS0\home_2\20260503\Era\egfr\h5_affined\ctrl",
+        #     "--output": r"U:\Chenglang\segmentation\dataset",
+        #     "--application": "Egfr_drug_screening",
+        #     "--info": "ctrl",
+        #     "--date": "20250503_egfr_positiveDrug",
+        #     "--organ": "Nubbin",
+        # },
         {
-            "--input": r"U:\Chenglang\segmentation\test",
+            "--input": r"\\FZ_NAS0\home_2\20260503\Era\egfr\h5_affined\G4",
             "--output": r"U:\Chenglang\segmentation\dataset",
-            "--application": "Optimization_TissueClear",
-            "--info": "Test",
-            "--date": "20251115_nsyb_PFA_PUT20-200",
-            "--organ": "CNS",
+            "--application": "Egfr_drug_screening",
+            "--info": "G4",
+            "--date": "20250503_egfr_positiveDrug",
+            "--organ": "Nubbin",
+        },
+        {
+            "--input": r"\\FZ_NAS0\home_2\20260503\Era\egfr\h5_affined\G5",
+            "--output": r"U:\Chenglang\segmentation\dataset",
+            "--application": "Egfr_drug_screening",
+            "--info": "G5",
+            "--date": "20250503_egfr_positiveDrug",
+            "--organ": "Nubbin",
+        },
+        {
+            "--input": r"\\FZ_NAS0\home_2\20260503\Era\egfr\h5_affined\E3",
+            "--output": r"U:\Chenglang\segmentation\dataset",
+            "--application": "Egfr_drug_screening",
+            "--info": "E3",
+            "--date": "20250503_egfr_positiveDrug",
+            "--organ": "Nubbin",
         },
         # {
-        #     "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251016\0.01Combination_63148\Control\Good images",
+        #     "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251125\0.05Combination_90392\0.05\Good images",
         #     "--output": r"U:\Chenglang\segmentation\dataset",
         #     "--application": "Toxicology",
-        #     "--info": "Control",
-        #     "--date": "20251016_nubbin_Yuya",
-        #     "--organ": "Nubbin",
+        #     "--info": "0.05",
+        #     "--date": "20251125_drl_Yuya",
+        #     "--organ": "CNS",
         # },
         # {
-        #     "--input": r"\\FZ_NAS0\home\20251114\51965_nsyb\h5_affined",
+        #     "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251125\0.05Combination_90392\0.05_0.3\Good images",
         #     "--output": r"U:\Chenglang\segmentation\dataset",
         #     "--application": "Toxicology",
-        #     "--info": "0.01",
-        #     "--date": "20251016_nubbin_Yuya",
-        #     "--organ": "Nubbin",
+        #     "--info": "0.05_0.3",
+        #     "--date": "20251125_drl_Yuya",
+        #     "--organ": "CNS",
         # },
         # {
-        #     "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251016\0.01Combination_63148\0.01_0.3\Good images",
+        #     "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251125\0.05Combination_90392\0.05_3.0\Good images",
         #     "--output": r"U:\Chenglang\segmentation\dataset",
         #     "--application": "Toxicology",
-        #     "--info": "0.01_0.3",
-        #     "--date": "20251016_nubbin_Yuya",
-        #     "--organ": "Nubbin",
-        # },
-        # {
-        #     "--input": r"\\FZ_NAS0\home\Classification\annotation\dataset\20251016\0.01Combination_63148\0.01_3.0\Good images",
-        #     "--output": r"U:\Chenglang\segmentation\dataset",
-        #     "--application": "Toxicology",
-        #     "--info": "0.01_3.0",
-        #     "--date": "20251016_nubbin_Yuya",
-        #     "--organ": "Nubbin",
+        #     "--info": "0.05_3.0",
+        #     "--date": "20251125_drl_Yuya",
+        #     "--organ": "CNS",
         # },
         # 更多任务可添加在这里
     ]
@@ -178,5 +194,4 @@ if __name__ == "__main__":
             sys.argv += [k, v]
         print(f"\n🚀 Running task: {task['--info']} on date {task['--date']}")
         main()
-
 
