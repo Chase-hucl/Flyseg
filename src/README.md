@@ -34,14 +34,14 @@ pip install -r requirements.txt
 ## 🚀 Usage Example
 
 ```bash
-python -m flyseg.scripts.prediction  --input "T:\Chenglang\classification\annotation\dataset\20250415\20250415\Control\Good images\test"   --output "T:\Chenglang\test"   --application Toxicology   --info PMMA_control   --date 20250415   --organ CNS
+python -m flyseg.scripts.prediction  --input "***\test"   --output "***\prediction"   --application Segmentation   --info Control   --date 20260415   --organ CNS
 ```
 
 ### Parameters
-- `--input`: Input `.h5` file path  
+- `--input`: Directory containing the input .h5 files. The test samples are provided in Flyseg\src\flyseg\sample_data.
 - `--output`: Output directory  
 - `--application`: Application type (e.g., Toxicology)  
-- `--info`: Experiment batch info (e.g., PMMA_control)  
+- `--info`: Experiment batch info (e.g., Control)  
 - `--date`: Experiment date (YYYYMMDD)  
 - `--organ`: Target tissue segmentation, options:  
   - `CNS` — Central nervous system segmentation  
